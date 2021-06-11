@@ -13,6 +13,9 @@ import Header from "../components/layouts/dashboard/Header";
 import SideBar from "../components/layouts/dashboard/SideBar";
 import { TOGGLE_SIDEBAR } from "../store/types";
 import { useDimension } from "../utils/Dimension";
+import ReactLoading from "react-loading";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles({
   wrapper: {
@@ -35,13 +38,24 @@ const useStyles = makeStyles({
     width: "100%",
     padding: "0 !important",
   },
+  loaderWrapper: {
+    width: "100%",
+    height: "100%",
+    position: "fixed",
+    top: 0,
+    left: 0,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 const DashboardLayout = ({ children }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const dimension = useDimension();
-  const { sidebarShow } = useSelector((state) => state.site);
+  const { sidebarShow, loading } = useSelector((state) => state.site);
 
   const closeHandler = () => {
     dispatch({
@@ -52,6 +66,14 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <>
+      {loading && (
+        <Box className={classes.loaderWrapper}>
+          <ReactLoading type="spin" color="crimson" height={100} width={100} />
+        </Box>
+      )}
+
+      <ToastContainer />
+
       <Grid
         container
         justify="space-between"

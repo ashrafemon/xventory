@@ -6,6 +6,12 @@ const initialState = {
   menuList: menuList,
   stores: stores,
   sidebarShow: true,
+  divisions: [],
+  loading: false,
+  errors: null,
+  division: {},
+  districts: [],
+  district: {},
 };
 
 const siteReducer = (state = initialState, action) => {
@@ -14,6 +20,36 @@ const siteReducer = (state = initialState, action) => {
       return {
         ...state,
         sidebarShow: action.payload,
+      };
+    case types.FETCH_DIVISIONS:
+      return {
+        ...state,
+        divisions: action.payload,
+      };
+    case types.FETCH_DIVISION:
+      return {
+        ...state,
+        division: action.payload,
+      };
+    case types.UPDATE_DIVISION:
+      return {
+        ...state,
+        division: action.payload,
+      };
+    case types.DELETE_DIVISION:
+      return {
+        ...state,
+        divisions: {
+          ...state.divisions,
+          divisionList: state.divisions.divisionList.filter(
+            (item) => item.id !== action.payload
+          ),
+        },
+      };
+    case types.TOGGLE_LOADING:
+      return {
+        ...state,
+        loading: action.payload,
       };
     default:
       return state;
