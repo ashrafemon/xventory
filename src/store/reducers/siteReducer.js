@@ -12,6 +12,8 @@ const initialState = {
   division: {},
   districts: [],
   district: {},
+  subDistricts: [],
+  postOffices: [],
 };
 
 const siteReducer = (state = initialState, action) => {
@@ -45,6 +47,41 @@ const siteReducer = (state = initialState, action) => {
             (item) => item.id !== action.payload
           ),
         },
+      };
+    case types.FETCH_DISTRICTS:
+      return {
+        ...state,
+        districts: action.payload,
+      };
+    case types.FETCH_DISTRICT:
+      return {
+        ...state,
+        district: action.payload,
+      };
+    case types.UPDATE_DISTRICT:
+      return {
+        ...state,
+        district: action.payload,
+      };
+    case types.DELETE_DISTRICT:
+      return {
+        ...state,
+        districts: {
+          ...state.districts,
+          districtList: state.districts.districtList.filter(
+            (item) => item.id !== action.payload
+          ),
+        },
+      };
+    case types.FETCH_SUB_DISTRICTS_BY_DISTRICT_ID:
+      return {
+        ...state,
+        subDistricts: action.payload,
+      };
+    case types.FETCH_POST_OFFICES_BY_SUB_DISTRICT_ID:
+      return {
+        ...state,
+        postOffices: action.payload,
       };
     case types.TOGGLE_LOADING:
       return {

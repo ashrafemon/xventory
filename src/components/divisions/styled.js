@@ -43,4 +43,7 @@ export const useStyles = makeStyles({
       },
     },
   },
+  pagination: {
+    color: "#fff",
+  },
 });

@@ -9,15 +9,11 @@ import {
 import { Autocomplete } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useStyles } from "../../components/divisions/styled";
 import PageTitle from "../../components/shared/PageTitle/PageTitle";
-import {
-  createDivision,
-  fetchDivision,
-  updateDivision,
-} from "../../store/actions/siteAction";
-import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import locationAction from "../../store/actions/location";
 
 const EditDivision = () => {
   const classes = useStyles();
@@ -31,7 +27,7 @@ const EditDivision = () => {
   const { division } = useSelector((state) => state.site);
 
   useEffect(() => {
-    dispatch(fetchDivision(id));
+    dispatch(locationAction.fetchDivision(id));
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -57,7 +53,7 @@ const EditDivision = () => {
       toast.error("Country Field Required");
     } else {
       dispatch(
-        updateDivision({
+        locationAction.updateDivision({
           name: form.name,
           country: form.country,
           id: id,

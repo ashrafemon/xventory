@@ -7,21 +7,48 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useStyles } from "../../components/divisions/styled";
 import PageTitle from "../../components/shared/PageTitle/PageTitle";
 import locationAction from "../../store/actions/location";
 
-const CreateDivision = () => {
+const EditDistrict = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [countries] = useState(["Bangladesh", "India", "USA"]);
+  const { id } = useParams();
   const [form, setForm] = useState({
     name: "",
-    country: "",
+    division: null,
   });
+  const { district } = useSelector((state) => state.site);
+  const { divisionList } = useSelector((state) => state.site.divisions);
+  const [divisionOptions, setDivisionOptions] = useState([]);
+
+  useEffect(() => {
+    dispatch(locationAction.fetchDivisions(100));
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(locationAction.fetchDistrict(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (divisionList) {
+      let divisions = [];
+      divisionList.map((item) => divisions.push(item));
+      setDivisionOptions(divisions);
+    }
+  }, [divisionList]);
+
+  useEffect(() => {
+    setForm({
+      name: district.name,
+      division: district.division,
+    });
+  }, [district]);
 
   const changeHandler = (value, field) => {
     setForm({
@@ -35,10 +62,16 @@ const CreateDivision = () => {
 
     if (form.name === "") {
       toast.error("Name Field Required");
-    } else if (form.country === "") {
-      toast.error("Country Field Required");
+    } else if (!form.division) {
+      toast.error("Division Field Required");
     } else {
-      dispatch(locationAction.createDivision(form));
+      dispatch(
+        locationAction.updateDivision({
+          name: form.name,
+          country: form.division.id,
+          id: id,
+        })
+      );
 
       setForm({
         name: "",
@@ -47,13 +80,15 @@ const CreateDivision = () => {
     }
   };
 
+  console.log(divisionList);
+
   return (
     <Box>
-      <PageTitle title="Divisions" />
+      <PageTitle title="Districts" />
 
       <Box mt={2} p={2} className={classes.contentBox}>
         <Typography className={classes.portionTitle} variant="h4">
-          Create New Division
+          Edit District
         </Typography>
 
         <Box mt={5}>
@@ -84,19 +119,21 @@ const CreateDivision = () => {
                   <Grid container alignItems="center">
                     <Grid item xs={12} sm={2}>
                       <FormLabel className={classes.inputLabel}>
-                        Country: *
+                        Division: *
                       </FormLabel>
                     </Grid>
                     <Grid item xs={12} sm={10}>
                       <Autocomplete
                         className={classes.inputField}
                         closeIcon={false}
-                        options={countries}
+                        options={divisionOptions}
                         fullWidth
                         size="small"
-                        value={form.country}
-                        onChange={(e, value) => changeHandler(value, "country")}
-                        getOptionLabel={(option) => option}
+                        value={form.division}
+                        onChange={(e, value) =>
+                          changeHandler(value, "division")
+                        }
+                        getOptionLabel={(option) => option.name}
                         renderInput={(params) => (
                           <TextField {...params} variant="outlined" />
                         )}
@@ -109,7 +146,7 @@ const CreateDivision = () => {
                   <Grid container justify="flex-end">
                     <Grid item xs={12} sm={10}>
                       <Button type="submit" variant="contained" color="primary">
-                        Create Division
+                        Update District
                       </Button>
                     </Grid>
                   </Grid>
@@ -123,4 +160,4 @@ const CreateDivision = () => {
   );
 };
 
-export default CreateDivision;
+export default EditDistrict;

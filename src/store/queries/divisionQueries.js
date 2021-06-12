@@ -1,12 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_DIVISIONS = gql`
-  {
-    getDivisionListByCountryName(
-      countryName: "Bangladesh"
-      size: 10
-      offset: 0
-    ) {
+  query ($size: Int!, $offset: Int!) {
+    getDivisionList(size: $size, offset: $offset) {
       status
       code
       errors {
@@ -103,30 +99,6 @@ export const DELETE_DIVISION = gql`
         field
         message
         description
-      }
-    }
-  }
-`;
-
-export const ADD_DISTRICT = gql`
-  mutation ($name: String!, $divisionId: String!) {
-    createDistrict(district: { name: $name, division: { id: $divisionId } }) {
-      status
-      code
-      errors {
-        code
-        field
-        message
-        description
-      }
-      data {
-        id
-        name
-        division {
-          id
-          name
-          country
-        }
       }
     }
   }
